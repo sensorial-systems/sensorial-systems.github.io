@@ -1,0 +1,8 @@
+[package]
+name = "page"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+web-component = { version = "0.1.11", features = ["web"] }
+dioxus = { version = "0.7.2", features = ["web", "router"] }
