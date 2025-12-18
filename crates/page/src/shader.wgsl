@@ -23,12 +23,120 @@ fn vs_main(
 @group(0) @binding(0)
 var<uniform> time_data: vec4<f32>;
 
+fn sdSphere(p: vec3<f32>, s: f32) -> f32 {
+    return length(p) - s;
+}
+
+fn sdCylinder(p: vec3<f32>, h: vec2<f32>) -> f32 {
+    let d = abs(vec2<f32>(length(p.xz), p.y)) - h;
+    return min(max(d.x, d.y), 0.0) + length(max(d, vec2<f32>(0.0)));
+}
+
+// Infinite cylinder along an axis
+fn sdInfCylinder(p: vec2<f32>, r: f32) -> f32 {
+    return length(p) - r;
+}
+
+fn opRep(p: vec3<f32>, c: vec3<f32>) -> vec3<f32> {
+    return (p % c) - 0.5 * c;
+}
+
+fn map(pos: vec3<f32>) -> f32 {
+    let spacing = 4.0;
+    // Modulo arithmetic for infinite repetition
+    // We need a stable modulo that handles negative numbers correctly for space
+    let c = vec3<f32>(spacing);
+    let q = (pos % c + c) % c - 0.5 * c;
+
+    // Radius of spheres
+    let r_sphere = 0.35;
+    // Radius of connecting cylinders
+    let r_cyl = 0.12;
+
+    var d = sdSphere(q, r_sphere);
+    
+    // Cylinders connecting the spheres
+    // Cylinder along X axis (distance depends on YZ)
+    d = min(d, sdInfCylinder(q.yz, r_cyl));
+    // Cylinder along Y axis (distance depends on XZ)
+    d = min(d, sdInfCylinder(q.xz, r_cyl));
+    // Cylinder along Z axis (distance depends on XY)
+    d = min(d, sdInfCylinder(q.xy, r_cyl));
+
+    return d;
+}
+
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     let time = time_data.x;
-    // Simple gradient
-    let r = 0.5 + 0.5 * cos(time + in.uv.xyx + vec3<f32>(0.0, 2.0, 4.0));
-    // Darker background style
-    let color = mix(vec3<f32>(0.05, 0.05, 0.1), r, 0.2);
-    return vec4<f32>(color, 1.0);
+    let resolution = vec2<f32>(time_data.y, time_data.z);
+    
+    // Normalized pixel coordinates (from 0 to 1)
+    // Adjust UV to -1.0 to 1.0 and correct aspect ratio
+    var uv = in.uv * 2.0 - 1.0;
+    uv.x = uv.x * (resolution.x / resolution.y);
+
+    // Camera setup
+    // Move camera continuously along a diagonal
+    let speed = 2.0;
+    let ro = vec3<f32>(time * speed, time * speed * 0.5, time * speed);
+    
+    // Ray direction
+    let camTarget = ro + vec3<f32>(0.0, 0.0, 1.0); // Look forward relative to movement? 
+    // Actually just simple forward looking camera is enough, but since we move diagonally,
+    // let's just align camera axis.
+    // For simple infinite lattice, fixed orientation is fine.
+    
+    // Basic camera matrix approximation
+    let camForward = normalize(vec3<f32>(1.0, 0.5, 1.0)); // Look in movement direction
+    let camRight = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), camForward));
+    let camUp = cross(camForward, camRight);
+    
+    let rd = normalize(uv.x * camRight + uv.y * camUp + 2.0 * camForward);
+
+    // Ray marching constants
+    let MAX_STEPS = 100;
+    let MAX_DIST = 100.0;
+    let SURF_DIST = 0.001;
+
+    var t = 0.0;
+    var hit = false;
+
+    for (var i = 0; i < MAX_STEPS; i++) {
+        let p = ro + rd * t;
+        let d = map(p);
+        
+        if (d < SURF_DIST) {
+            hit = true;
+            break;
+        }
+        
+        t += d;
+        if (t > MAX_DIST) {
+            break;
+        }
+    }
+
+    // Colors
+    // Background #FFD208 -> (1.0, 0.8235, 0.0314)
+    // Gamma correction for sRGB -> Linear
+    // pow(1.0, 2.2) = 1.0
+    // pow(0.8235, 2.2) = 0.652
+    // pow(0.0314, 2.2) = 0.0005
+    let col_bg = vec3<f32>(1.0, 0.652, 0.0005);
+    let col_net = vec3<f32>(0.0, 0.0, 0.0);
+
+    var final_color = col_bg;
+    if (hit) {
+        // Optional: Add some simple shading/fog to make 3D more apparent?
+        // User requested "network should be black".
+        // Pure black might look flat. Let's stick to pure black for now.
+        // We can mix with background based on distance for fog effect.
+        // Fog makes it look deeper.
+        
+        let fog_amount = 1.0 - exp(-t * 0.03); // Fog density
+        final_color = mix(col_net, col_bg, clamp(fog_amount, 0.0, 1.0));
+    }
+
+    return vec4<f32>(final_color, 1.0);
 }

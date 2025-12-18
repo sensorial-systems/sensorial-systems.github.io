@@ -6,7 +6,7 @@ use crate::canvas::WgpuCanvas;
 pub fn LandingPage() -> Element {
     rsx! {
         style { { include_str!("style.css") } }
-        WgpuCanvas {}
+        style { { include_str!("style.css") } }
         div { class: "container",
             // Navbar
             nav { class: "navbar",
@@ -16,6 +16,7 @@ pub fn LandingPage() -> Element {
 
             // Hero
             header { class: "hero",
+                WgpuCanvas {}
                 h1 {
                     "Intelligence,"
                     br {}

@@ -153,7 +153,12 @@ async fn start_wgpu(canvas: web_sys::HtmlCanvasElement) {
 
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         let now = web_sys::window().unwrap().performance().unwrap().now();
+        let current_width = canvas.client_width() as u32;
+        let current_height = canvas.client_height() as u32;
+        
         uniform_data[0] = ((now - start_time) / 1000.0) as f32;
+        uniform_data[1] = current_width as f32;
+        uniform_data[2] = current_height as f32;
 
         queue.write_buffer(&time_buffer, 0, bytemuck::cast_slice(&uniform_data));
 
