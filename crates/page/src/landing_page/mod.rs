@@ -1,53 +1,65 @@
 use dioxus::prelude::*;
-
+use web_component::prelude::*;
 use crate::canvas::WgpuCanvas;
 
-#[component]
-pub fn LandingPage() -> Element {
-    rsx! {
-        style { { include_str!("style.css") } }
-        style { { include_str!("style.css") } }
-        div { class: "container",
-            // Navbar
-            nav { class: "navbar",
-                div { class: "brand", "Sensorial Systems" }
-                // Simple text link or button for nav could go here
-            }
+pub struct LandingPageComponent {}
 
-            // Hero
-            header { class: "hero",
-                WgpuCanvas {}
-                h1 {
-                    "Intelligence,"
-                    br {}
-                    "Distributed."
+impl FromProperties<NoProperties> for LandingPageComponent {
+    fn from_properties(_: NoProperties) -> Self {
+        Self {}
+    }
+}
+
+impl WebComponent for LandingPageComponent {
+    type Properties = NoProperties;
+
+    fn render(_: Signal<Self>) -> Element {
+        rsx! {
+            style { { include_str!("style.css") } }
+            div { class: "container",
+                // Navbar
+                nav { class: "navbar",
+                    div { class: "brand", "Sensorial Systems" }
+                    // Simple text link or button for nav could go here
                 }
-                p {
-                    "Secure, scalable, and decentralized AI inference for the next generation of privacy-preserving applications."
+
+                // Hero
+                header { class: "hero",
+                    WgpuCanvas {}
+                    h1 {
+                        "Intelligence,"
+                        br {}
+                        "Distributed."
+                    }
+                    p {
+                        "Secure, scalable, and decentralized AI inference for the next generation of privacy-preserving applications."
+                    }
+                    a { class: "cta-button", href: "#products", "Explore Technology" }
                 }
-                a { class: "cta-button", href: "#products", "Explore Technology" }
-            }
 
-            // Pixelated Divider
-            div { class: "pixel-divider" }
+                // Pixelated Divider
+                div { class: "pixel-divider" }
 
-            // Products
-            section { id: "products", class: "products",
-                h2 { class: "section-title", "Ecosystem" }
-                div { class: "grid",
-                    div { class: "product-card",
-                        div { class: "product-icon", "◉" }
-                        h3 { class: "product-title", "Inference System" }
-                        p { class: "product-desc",
-                            "Run complex AI models across a decentralized mesh of devices. Zero-trust architecture with homomorphic encryption support."
+                // Products
+                section { id: "products", class: "products",
+                    h2 { class: "section-title", "Ecosystem" }
+                    div { class: "grid",
+                        div { class: "product-card",
+                            div { class: "product-icon", "◉" }
+                            h3 { class: "product-title", "Inference System" }
+                            p { class: "product-desc",
+                                "Run complex AI models across a decentralized mesh of devices. Zero-trust architecture with homomorphic encryption support."
+                            }
                         }
                     }
                 }
             }
-        }
 
-        footer {
-            "© 2025 Sensorial Systems. All rights reserved."
+            footer {
+                "© 2025 Sensorial Systems. All rights reserved."
+            }
         }
     }
 }
+
+expose_component!(LandingPageComponent as LandingPage);

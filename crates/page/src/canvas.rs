@@ -1,51 +1,62 @@
-use dioxus::prelude::*;
+use web_component::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
-use wasm_bindgen::prelude::*;
+// use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use wasm_bindgen::closure::Closure; // Fixed Closure import
+use wasm_bindgen::closure::Closure;
 use wgpu::util::DeviceExt;
-use std::borrow::Cow; // Added Cow
+use std::borrow::Cow;
 
-#[component]
-pub fn WgpuCanvas() -> Element {
-    let mut canvas_ref = use_signal(|| None::<web_sys::HtmlCanvasElement>);
+pub struct Canvas {}
 
-    use_effect(move || {
-        if let Some(canvas) = canvas_ref() {
-            spawn(async move {
-                start_wgpu(canvas).await;
-            });
-        }
-    });
+impl FromProperties<NoProperties> for Canvas {
+    fn from_properties(_: NoProperties) -> Self {
+        Self {}
+    }
+}
 
-    rsx! {
-        canvas {
-            id: "background-canvas",
-            style: "width: 100%; height: 100%; display: block;",
-            onmounted: move |evt| {
-                async move {
-                     use dioxus::web::WebEventExt;
-                     let element = evt.as_web_event(); 
-                     if let Some(canvas) = element.dyn_ref::<web_sys::HtmlCanvasElement>() {
-                          canvas_ref.set(Some(canvas.clone()));
-                     }
+impl WebComponent for Canvas {
+    type Properties = NoProperties;
+
+    fn render(mut component: Signal<Self>) -> Element {
+        rsx! {
+            canvas {
+                id: "background-canvas",
+                style: "width: 100%; height: 100%; display: block;",
+                onmounted: move |evt| {
+                    async move {
+                         use dioxus::web::WebEventExt;
+                         let element = evt.as_web_event();
+                         if let Some(canvas) = element.dyn_ref::<web_sys::HtmlCanvasElement>() {
+                              // We need to pass web_sys::Element to on_mount_with_element
+                              component.write().on_mount_with_element(canvas.clone().into());
+                         }
+                    }
                 }
             }
         }
     }
+
+    fn on_mount_with_element(&mut self, element: web_sys::Element) {
+        if let Ok(canvas) = element.dyn_into::<web_sys::HtmlCanvasElement>() {
+            spawn(async move {
+                start_wgpu(canvas).await;
+            });
+        }
+    }
 }
+
+expose_component!(Canvas as WgpuCanvas);
 
 async fn start_wgpu(canvas: web_sys::HtmlCanvasElement) {
     let size = (canvas.client_width() as u32, canvas.client_height() as u32);
     
     let instance = wgpu::Instance::default();
-    // Fixed create_surface
     let surface = instance.create_surface(wgpu::SurfaceTarget::Canvas(canvas.clone())).unwrap();
     
     let adapter = instance
         .request_adapter(&wgpu::RequestAdapterOptions {
-            power_preference: wgpu::PowerPreference::None, // Fixed PowerPreference
+            power_preference: wgpu::PowerPreference::None,
             compatible_surface: Some(&surface),
             force_fallback_adapter: false,
         })
@@ -64,7 +75,6 @@ async fn start_wgpu(canvas: web_sys::HtmlCanvasElement) {
         .await
         .unwrap();
 
-    // Fixed shader loading
     let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
         label: Some("Shader"),
         source: wgpu::ShaderSource::Wgsl(Cow::Borrowed(include_str!("shader.wgsl"))),

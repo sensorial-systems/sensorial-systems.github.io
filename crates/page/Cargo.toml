@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-
+web-component = { path = "../../../web-component/crates/web-component", features = ["web"] }
 dioxus = { version = "0.7.2", features = ["web", "router"] }
 wgpu = { version = "0.19", default-features = false, features = ["webgl", "wgsl"]}
 bytemuck = "1.16"

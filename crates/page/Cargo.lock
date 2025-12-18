@@ -1128,6 +1128,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-as-inner"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1e6a265c649f3f5979b601d26f1d05ada116434c87741c9493cb56218f76cbc"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.111",
+]
+
+[[package]]
 name = "enumset"
 version = "1.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1552,6 +1564,12 @@ checksum = "54b4a22553d4242c49fddb9ba998a99962b5cc6f22cb5a3482bec22522403ce4"
 dependencies = [
  "http",
 ]
+
+[[package]]
+name = "heck"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hexf-parse"
@@ -2249,6 +2267,7 @@ dependencies = [
  "dioxus",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+ "web-component",
  "web-sys",
  "wgpu",
 ]
@@ -3515,6 +3534,20 @@ dependencies = [
  "futures-util",
  "js-sys",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "web-component"
+version = "0.1.11"
+dependencies = [
+ "dioxus",
+ "dioxus-logger",
+ "enum-as-inner",
+ "reqwest",
+ "serde",
+ "tokio",
  "wasm-bindgen-futures",
  "web-sys",
 ]
