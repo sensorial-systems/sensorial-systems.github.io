@@ -91,7 +91,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     let camForward = normalize(vec3<f32>(1.0, 0.5, 1.0)); // Look in movement direction
     let camRight = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), camForward));
     let camUp = cross(camForward, camRight);
-    
+
     let rd = normalize(uv.x * camRight + uv.y * camUp + 2.0 * camForward);
 
     // Ray marching constants
@@ -105,35 +105,32 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     for (var i = 0; i < MAX_STEPS; i++) {
         let p = ro + rd * t;
         let d = map(p);
-        
-        if (d < SURF_DIST) {
+
+        if d < SURF_DIST {
             hit = true;
             break;
         }
-        
+
         t += d;
-        if (t > MAX_DIST) {
+        if t > MAX_DIST {
             break;
         }
     }
 
     // Colors
     // Background #FFD208 -> (1.0, 0.8235, 0.0314)
-    // Gamma correction for sRGB -> Linear
-    // pow(1.0, 2.2) = 1.0
-    // pow(0.8235, 2.2) = 0.652
-    // pow(0.0314, 2.2) = 0.0005
-    let col_bg = vec3<f32>(1.0, 0.652, 0.0005);
+
+    let col_bg = vec3<f32>(1.0, 0.8235294117647058, 0.03137254901960784);
     let col_net = vec3<f32>(0.0, 0.0, 0.0);
 
     var final_color = col_bg;
-    if (hit) {
+    if hit {
         // Optional: Add some simple shading/fog to make 3D more apparent?
         // User requested "network should be black".
         // Pure black might look flat. Let's stick to pure black for now.
         // We can mix with background based on distance for fog effect.
         // Fog makes it look deeper.
-        
+
         let fog_amount = 1.0 - exp(-t * 0.03); // Fog density
         final_color = mix(col_net, col_bg, clamp(fog_amount, 0.0, 1.0));
     }
