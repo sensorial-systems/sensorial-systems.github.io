@@ -41,6 +41,16 @@ body {
     text-transform: uppercase;
 }
 
+#background-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
 /* Hero Section */
 .hero {
     display: flex;
@@ -48,9 +58,9 @@ body {
     align-items: flex-start;
     justify-content: center;
     padding: 8rem 4rem 10rem;
-    background-color: #FFD208;
+    background-color: transparent;
     position: relative;
-    color: #000000;
+    color: #ffffff;
 }
 
 .hero h1 {
@@ -69,7 +79,7 @@ body {
     max-width: 600px;
     margin-bottom: 3rem;
     line-height: 1.4;
-    color: #111314;
+    color: #e5e5e5;
 }
 
 .cta-button {

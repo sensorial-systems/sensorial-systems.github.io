@@ -1,8 +1,9 @@
 #![allow(non_snake_case)]
 
-use web_component::prelude::*;
+use dioxus::prelude::*;
 
 mod landing_page;
+mod canvas;
 
 use landing_page::LandingPage;
 
