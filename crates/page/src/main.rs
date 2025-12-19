@@ -5,6 +5,7 @@ use dioxus::prelude::*;
 mod brand;
 mod canvas;
 mod landing_page;
+mod product;
 mod theme;
 
 use landing_page::LandingPage;
