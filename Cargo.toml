@@ -27,3 +27,9 @@ web-sys = { version = "0.3", features = [
     "Performance",
     "console",
 ] }
+
+[profile.release]
+opt-level = 'z'   # Optimize for size
+lto = true        # Enable link-time optimizations
+codegen-units = 1 # Strip symbols for smaller binary size
+panic = 'abort'   # Optionally, set a panic strategy that doesn't unwind
