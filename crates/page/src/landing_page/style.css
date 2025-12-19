@@ -11,16 +11,20 @@ body {
     color: var(--secondary-color);
     background-color: var(--secondary-color);
     height: 100vh;
+    height: 100dvh;
     margin: 0;
     line-height: 1.5;
     overflow: hidden;
+    overscroll-behavior: none;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
+    overscroll-behavior: none;
 }
 
 /* Header & Footer common styles */
@@ -156,6 +160,8 @@ body {
         overflow-y: auto;
         pointer-events: auto;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 
 
