@@ -1,0 +1,33 @@
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-family, 'Inter', sans-serif);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-top {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.brand-bottom {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--secondary-color);
+}

@@ -1,3 +1,4 @@
+use crate::brand::Brand;
 use crate::canvas::WgpuCanvas;
 use dioxus::prelude::*;
 use web_component::prelude::*;
@@ -14,12 +15,20 @@ impl WebComponent for LandingPageComponent {
     type Properties = NoProperties;
 
     fn render(_: Signal<Self>) -> Element {
+        let logo_source = asset!("/assets/logo.png");
         rsx! {
             style { { include_str!("style.css") } }
             div { class: "container",
                 // Header
                 nav { class: "navbar",
-                    div { class: "brand", "Sensorial Systems" }
+                    div { class: "nav-left",
+                        img { class: "logo", src: "{logo_source}", alt: "Sensorial Logo" }
+                    }
+                    div { class: "nav-right",
+                        button { class: "nav-button", "Systems" }
+                        button { class: "nav-button", "Studio" }
+                        button { class: "nav-button", "Finance" }
+                    }
                 }
 
                 // Main Canvas Area
@@ -48,7 +57,7 @@ impl WebComponent for LandingPageComponent {
 
                 // Footer
                 footer { class: "footer",
-                    div { class: "brand", "Sensorial Systems" }
+                    Brand { variant: "Systems" }
                     div { class: "footer-info", "© 2025 ALL RIGHTS RESERVED" }
                 }
             }

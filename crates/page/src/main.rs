@@ -2,10 +2,13 @@
 
 use dioxus::prelude::*;
 
-mod landing_page;
+mod brand;
 mod canvas;
+mod landing_page;
+mod theme;
 
 use landing_page::LandingPage;
+use theme::Theme;
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 enum Route {
@@ -14,7 +17,10 @@ enum Route {
 }
 
 fn App() -> Element {
+    let theme = Theme::default();
+    let style = theme.to_css_style();
     rsx! {
+        { style }
         Router::<Route> {}
     }
 }

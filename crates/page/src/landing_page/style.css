@@ -8,8 +8,8 @@ body {
 :host {
     display: block;
     font-family: 'Inter', sans-serif;
-    color: #111314;
-    background-color: #111314;
+    color: var(--secondary-color);
+    background-color: var(--secondary-color);
     height: 100vh;
     margin: 0;
     line-height: 1.5;
@@ -30,7 +30,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 4rem;
-    background-color: #FFD208;
+    background-color: var(--primary-color);
     height: 8vh;
     min-height: 60px;
     border-bottom: 2px solid #000;
@@ -43,13 +43,39 @@ body {
     border-top: 2px solid #000;
 }
 
-.brand {
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.nav-right {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-button {
+    background: transparent;
+    border: none;
+    color: #000;
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: #000000;
-    letter-spacing: -0.02em;
     text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-button:hover {
+    border-bottom: 2px solid #000;
+    opacity: 0.7;
 }
 
 .footer-info {
@@ -100,13 +126,13 @@ body {
     border-radius: 0;
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     position: relative;
-    border-left: 6px solid #FFD208;
+    border-left: 6px solid var(--primary-color);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(25px);
 }
 
 .product-card:hover {
-    border-color: #FFD208;
+    border-color: var(--primary-color);
     background: rgb(0, 0, 0);
     transform: translateY(-10px);
     box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
@@ -115,7 +141,7 @@ body {
 .product-icon {
     font-size: 3rem;
     margin-bottom: 2rem;
-    color: #FFD208;
+    color: var(--primary-color);
 }
 
 .product-title {

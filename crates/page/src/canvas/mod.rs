@@ -1,3 +1,4 @@
+use crate::theme::Theme;
 use gpu::*;
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -107,8 +108,12 @@ impl WebComponent for CanvasComponent {
                 };
                 surface.configure(&device, &config);
 
-                // Time uniform buffer
-                let mut uniform_data = [0.0f32; 4]; // Wrapped in array for 16-byte alignment
+                // Uniform buffer: [time, width, height, padding, r, g, b, padding]
+                let mut uniform_data = [0.0f32; 8];
+                let theme = Theme::default();
+                uniform_data[4] = theme.primary_color.0 / 255.0;
+                uniform_data[5] = theme.primary_color.1 / 255.0;
+                uniform_data[6] = theme.primary_color.2 / 255.0;
 
                 let time_buffer = Buffer::new(
                     &device,

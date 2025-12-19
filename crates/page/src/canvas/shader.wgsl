@@ -20,8 +20,17 @@ fn vs_main(
     return out;
 }
 
+struct Uniforms {
+    time: f32,
+    width: f32,
+    height: f32,
+    _pad0: f32,
+    primary_color: vec3<f32>,
+    _pad1: f32,
+};
+
 @group(0) @binding(0)
-var<uniform> time_data: vec4<f32>;
+var<uniform> uniforms: Uniforms;
 
 fn sdSphere(p: vec3<f32>, s: f32) -> f32 {
     return length(p) - s;
@@ -68,8 +77,8 @@ fn map(pos: vec3<f32>) -> f32 {
 
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-    let time = time_data.x;
-    let resolution = vec2<f32>(time_data.y, time_data.z);
+    let time = uniforms.time;
+    let resolution = vec2<f32>(uniforms.width, uniforms.height);
     
     // Normalized pixel coordinates (from 0 to 1)
     // Adjust UV to -1.0 to 1.0 and correct aspect ratio
@@ -120,10 +129,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
         }
     }
 
-    // Colors
-    // Background #FFD208 -> (1.0, 0.8235, 0.0314)
-
-    let col_bg = vec3<f32>(1.0, 0.8235294117647058, 0.03137254901960784);
+    let col_bg = uniforms.primary_color;
     let col_net = vec3<f32>(0.0, 0.0, 0.0);
 
     var final_color = col_bg;
