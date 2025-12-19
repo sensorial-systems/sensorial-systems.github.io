@@ -18,7 +18,7 @@ impl Default for Theme {
 impl Theme {
     pub fn to_css_style(&self) -> Element {
         let primary_color = format!(
-            "rgb({},{},{})",
+            "{},{},{}",
             self.primary_color.0, self.primary_color.1, self.primary_color.2
         );
         let secondary_color = format!(
