@@ -109,11 +109,13 @@ body {
 }
 
 .product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    width: 90%;
-    max-width: 1400px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    padding: 0 4rem;
+    gap: 4rem;
+    box-sizing: border-box;
     pointer-events: auto;
 }
 
