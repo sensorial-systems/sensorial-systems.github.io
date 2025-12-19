@@ -79,7 +79,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     // Camera setup
     // Move camera continuously along a diagonal
     let speed = 2.0;
-    let ro = vec3<f32>(time * speed, time * speed * 0.5, time * speed);
+    let ro = vec3<f32>(time * speed, 0.0, 0.0);
     
     // Ray direction
     let camTarget = ro + vec3<f32>(0.0, 0.0, 1.0); // Look forward relative to movement? 
@@ -88,11 +88,14 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     // For simple infinite lattice, fixed orientation is fine.
     
     // Basic camera matrix approximation
-    let camForward = normalize(vec3<f32>(1.0, 0.5, 1.0)); // Look in movement direction
-    let camRight = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), camForward));
-    let camUp = cross(camForward, camRight);
+    // let camForward = normalize(vec3<f32>(1.0, 0.5, 1.0)); // Look in movement direction
+    // let camRight = normalize(cross(vec3<f32>(0.0, 1.0, 0.0), camForward));
+    // let camUp = cross(camForward, camRight);
+    let camForward = vec3<f32>(0.0, 0.0, 1.0);
+    let camRight = vec3<f32>(1.0, 0.0, 0.0);
+    let camUp = vec3<f32>(0.0, 1.0, 0.0);
 
-    let rd = normalize(uv.x * camRight + uv.y * camUp + 2.0 * camForward);
+    let rd = normalize(uv.x * camRight + uv.y * camUp + camForward);
 
     // Ray marching constants
     let MAX_STEPS = 100;
