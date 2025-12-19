@@ -21,6 +21,8 @@ fn App() -> Element {
     let theme = Theme::default();
     let style = theme.to_css_style();
     rsx! {
+        document::Title { "Sensorial Systems" }
+        document::Meta { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" }
         { style }
         Router::<Route> {}
     }
