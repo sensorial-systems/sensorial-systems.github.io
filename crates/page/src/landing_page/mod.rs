@@ -117,7 +117,6 @@ impl WebComponent for LandingPageComponent {
                         button {
                             class: if active_category == ProductCategory::Systems { "nav-button active" } else { "nav-button" },
                             onclick: move |_| {
-                                web_sys::console::log_1(&"Systems clicked".into());
                                 this.write().active_category = ProductCategory::Systems;
                             },
                             "Systems"
@@ -125,7 +124,6 @@ impl WebComponent for LandingPageComponent {
                         button {
                             class: if active_category == ProductCategory::Studio { "nav-button active" } else { "nav-button" },
                             onclick: move |_| {
-                                web_sys::console::log_1(&"Studio clicked".into());
                                 this.write().active_category = ProductCategory::Studio;
                             },
                             "Studio"
@@ -133,7 +131,6 @@ impl WebComponent for LandingPageComponent {
                         button {
                             class: if active_category == ProductCategory::Finance { "nav-button active" } else { "nav-button" },
                             onclick: move |_| {
-                                web_sys::console::log_1(&"Finance clicked".into());
                                 this.write().active_category = ProductCategory::Finance;
                             },
                             "Finance"

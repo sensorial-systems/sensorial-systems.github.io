@@ -140,7 +140,9 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
         // We can mix with background based on distance for fog effect.
         // Fog makes it look deeper.
 
-        let fog_amount = 1.0 - exp(-t * 0.03); // Fog density
+        let fog_density = 0.02;
+        let fog_offset = 5.0;
+        let fog_amount = 1.0 - exp(-max(0.0, t - fog_offset) * fog_density);
         final_color = mix(col_net, col_bg, clamp(fog_amount, 0.0, 1.0));
     }
 

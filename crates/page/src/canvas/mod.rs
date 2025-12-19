@@ -41,7 +41,13 @@ impl WebComponent for CanvasComponent {
     fn on_mount_with_element(&mut self, element: web_sys::Element) {
         if let Ok(canvas) = element.dyn_into::<web_sys::HtmlCanvasElement>() {
             spawn(async move {
-                let size = (canvas.client_width() as u32, canvas.client_height() as u32);
+                let dpr = web_sys::window().unwrap().device_pixel_ratio();
+                let size = (
+                    (canvas.client_width() as f64 * dpr) as u32,
+                    (canvas.client_height() as f64 * dpr) as u32,
+                );
+                canvas.set_width(size.0);
+                canvas.set_height(size.1);
 
                 // Use wgpu types directly, but apply gpu extension traits
                 let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor::default());
@@ -139,12 +145,13 @@ impl WebComponent for CanvasComponent {
 
                 *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
                     let now = web_sys::window().unwrap().performance().unwrap().now();
-                    let current_width = canvas.client_width() as u32;
-                    let current_height = canvas.client_height() as u32;
+                    let dpr = web_sys::window().unwrap().device_pixel_ratio();
+                    let current_width = (canvas.client_width() as f64 * dpr) as u32;
+                    let current_height = (canvas.client_height() as f64 * dpr) as u32;
 
                     uniform_data[0] = ((now - start_time) / 1000.0) as f32;
-                    uniform_data[1] = current_width as f32;
-                    uniform_data[2] = current_height as f32;
+                    uniform_data[1] = canvas.client_width() as f32;
+                    uniform_data[2] = canvas.client_height() as f32;
 
                     let data: &[u8] = bytemuck::cast_slice(&uniform_data);
                     queue.write_buffer(&time_buffer, 0, data);
@@ -152,11 +159,16 @@ impl WebComponent for CanvasComponent {
                     let frame = match surface.get_current_texture() {
                         Ok(frame) => frame,
                         Err(_) => {
-                            let new_size =
-                                (canvas.client_width() as u32, canvas.client_height() as u32);
+                            let dpr = web_sys::window().unwrap().device_pixel_ratio();
+                            let new_size = (
+                                (canvas.client_width() as f64 * dpr) as u32,
+                                (canvas.client_height() as f64 * dpr) as u32,
+                            );
                             if new_size.0 != config.width || new_size.1 != config.height {
                                 config.width = new_size.0;
                                 config.height = new_size.1;
+                                canvas.set_width(config.width);
+                                canvas.set_height(config.height);
                                 if config.width > 0 && config.height > 0 {
                                     surface.configure(&device, &config);
                                 }
