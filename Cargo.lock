@@ -2374,6 +2374,7 @@ version = "0.1.0"
 dependencies = [
  "bytemuck",
  "dioxus",
+ "gloo-timers",
  "gpu",
  "wasm-bindgen",
  "wasm-bindgen-futures",

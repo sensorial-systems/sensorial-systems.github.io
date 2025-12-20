@@ -8,7 +8,10 @@ pub struct ProductProperties {
     #[props(default = "Product Title".to_string())]
     pub title: String,
     #[props(default = "Product description goes here.".to_string())]
+    #[props(default = "Product description goes here.".to_string())]
     pub description: String,
+    #[props(default = 1.0)]
+    pub opacity: f32,
 }
 
 pub struct ProductComponent {
@@ -31,7 +34,7 @@ impl WebComponent for ProductComponent {
         rsx! {
             { theme.to_css_style() }
             style { { include_str!("style.css") } }
-            div { class: "product-card",
+            div { class: "product-card", style: "opacity: {props.opacity}",
                 div { class: "product-icon", "{props.icon}" }
                 h3 { class: "product-title", "{props.title}" }
                 p { class: "product-desc", "{props.description}" }

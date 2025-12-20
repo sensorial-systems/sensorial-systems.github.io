@@ -11,4 +11,5 @@ wgpu.workspace = true
 bytemuck.workspace = true
 wasm-bindgen.workspace = true
 wasm-bindgen-futures.workspace = true
+gloo-timers = { version = "0.3", features = ["futures"] }
 web-sys.workspace = true

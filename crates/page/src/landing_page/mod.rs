@@ -44,63 +44,65 @@ impl WebComponent for LandingPageComponent {
 
     fn render(mut this: Signal<Self>) -> Element {
         let active_category = this.read().active_category;
+
+        // Track the category currently being displayed (delayed update)
+        let mut display_category = use_signal(|| active_category);
+        // Track opacity for fade effect
+        let mut opacity = use_signal(|| 1.0f32);
+
         let theme = crate::theme::Theme::default();
+
+        let handle_category_change = move |new_category: ProductCategory| {
+            if this.read().active_category != new_category {
+                spawn(async move {
+                    // Update main active category immediately for UI (e.g. nav highlight)
+                    this.write().active_category = new_category;
+
+                    // Start fade out
+                    opacity.set(0.0);
+
+                    // Wait for fade out
+                    gloo_timers::future::TimeoutFuture::new(300).await;
+
+                    // Change displayed content
+                    display_category.set(new_category);
+
+                    // Fade back in
+                    opacity.set(1.0);
+                });
+            }
+        };
 
         use_effect(move || {
             let cat = this.read().active_category;
             web_sys::console::log_1(&format!("Active category changed: {:?}", cat).into());
         });
 
-        let products = match active_category {
+        let products = match *display_category.read() {
             ProductCategory::Systems => vec![
                 ProductData {
                     icon: "◉".to_string(),
-                    title: "Inference System".to_string(),
-                    description: "Decentralized mesh for secure, low-latency AI model execution at the edge.".to_string(),
-                },
-                ProductData {
-                    icon: "◈".to_string(),
-                    title: "Neural Mesh".to_string(),
-                    description: "Latency-optimized peer-to-peer intelligence routing for distributed agents.".to_string(),
-                },
-                ProductData {
-                    icon: "▣".to_string(),
-                    title: "Edge Sovereign".to_string(),
-                    description: "Privacy-first infrastructure ensuring data sovereignty for local AI autonomy.".to_string(),
+                    title: "Sensorial Compute Network".to_string(),
+                    description: "A distributed inference network that coordinates AI workloads across independent providers. It enables scalable, cost-efficient execution by matching requests to available compute and returning results asynchronously.".to_string(),
                 },
             ],
             ProductCategory::Studio => vec![
                 ProductData {
                     icon: "✎".to_string(),
-                    title: "Flow Canvas".to_string(),
-                    description: "Visual logic builder for complex multi-agent workflows and neural architectures.".to_string(),
-                },
-                ProductData {
-                    icon: "⚡︎".to_string(),
-                    title: "Synth Engine".to_string(),
-                    description: "High-performance asset generation and real-time inference pipeline for creative tools.".to_string(),
-                },
-                ProductData {
-                    icon: "⌘".to_string(),
-                    title: "Control Center".to_string(),
-                    description: "Unified dashboard for monitoring, deploying, and scaling agentic systems.".to_string(),
+                    title: "Sensorial Prism".to_string(),
+                    description: "An interactive shader development environment focused on real-time experimentation. It enables visual and code-based authoring of shaders with live previews and reusable compositions.".to_string(),
                 },
             ],
             ProductCategory::Finance => vec![
                 ProductData {
                     icon: "＄".to_string(),
-                    title: "Oracle Node".to_string(),
-                    description: "Verifiable data feeds for decentralized financial models and automated trading.".to_string(),
+                    title: "Sensorial Pay".to_string(),
+                    description: "A payment and accounting system designed for high-frequency, low-value transactions. It supports usage-based billing, credit balances, and efficient settlement between users and service providers.".to_string(),
                 },
                 ProductData {
-                    icon: "⚛".to_string(),
-                    title: "Ledger Mesh".to_string(),
-                    description: "High-throughput settlement layer for inter-agent value exchange and micro-payments.".to_string(),
-                },
-                ProductData {
-                    icon: "⚖".to_string(),
-                    title: "Risk Engine".to_string(),
-                    description: "Real-time risk assessment and automated compliance for algorithmic finance.".to_string(),
+                    icon: "▣".to_string(),
+                    title: "Sensorial Funding".to_string(),
+                    description: "A public funding system that enables transparent, community-driven financing of projects and initiatives. It provides structured allocation, contribution tracking, and accountable distribution of funds.".to_string(),
                 },
             ],
         };
@@ -114,9 +116,7 @@ impl WebComponent for LandingPageComponent {
                     div { class: "nav-right",
                         div {
                             class: "nav-item",
-                            onclick: move |_| {
-                                this.write().active_category = ProductCategory::Systems;
-                            },
+                            onclick: move |_| handle_category_change(ProductCategory::Systems),
                                 Brand {
                                     variant: "Systems",
                                     expanded: active_category == ProductCategory::Systems
@@ -124,9 +124,7 @@ impl WebComponent for LandingPageComponent {
                         }
                         div {
                             class: "nav-item",
-                            onclick: move |_| {
-                                this.write().active_category = ProductCategory::Studio;
-                            },
+                            onclick: move |_| handle_category_change(ProductCategory::Studio),
                                 Brand {
                                     variant: "Studio",
                                     expanded: active_category == ProductCategory::Studio
@@ -134,9 +132,7 @@ impl WebComponent for LandingPageComponent {
                         }
                         div {
                             class: "nav-item",
-                            onclick: move |_| {
-                                this.write().active_category = ProductCategory::Finance;
-                            },
+                            onclick: move |_| handle_category_change(ProductCategory::Finance),
                                 Brand {
                                     variant: "Finance",
                                     expanded: active_category == ProductCategory::Finance
@@ -149,13 +145,15 @@ impl WebComponent for LandingPageComponent {
                 main { class: "canvas-area",
                     WgpuCanvas {}
                     div { class: "canvas-overlay",
-                        div { class: "product-grid",
+                        div {
+                            class: "product-grid",
                             for product in products {
                                 Product {
                                     key: "{product.title}",
                                     icon: product.icon,
                                     title: product.title,
-                                    description: product.description
+                                    description: product.description,
+                                    opacity: opacity()
                                 }
                             }
                         }
@@ -164,7 +162,7 @@ impl WebComponent for LandingPageComponent {
 
                 // Footer
                 footer { class: "footer",
-                    Brand { variant: "{active_category}" }
+                    Brand { variant: "{display_category}" }
                     div { class: "footer-info", "© 2025 ALL RIGHTS RESERVED" }
                 }
             }
