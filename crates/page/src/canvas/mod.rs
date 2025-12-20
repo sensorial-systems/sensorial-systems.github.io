@@ -146,8 +146,8 @@ impl WebComponent for CanvasComponent {
                 *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
                     let now = web_sys::window().unwrap().performance().unwrap().now();
                     let dpr = web_sys::window().unwrap().device_pixel_ratio();
-                    let current_width = (canvas.client_width() as f64 * dpr) as u32;
-                    let current_height = (canvas.client_height() as f64 * dpr) as u32;
+                    let _current_width = (canvas.client_width() as f64 * dpr) as u32;
+                    let _current_height = (canvas.client_height() as f64 * dpr) as u32;
 
                     uniform_data[0] = ((now - start_time) / 1000.0) as f32;
                     uniform_data[1] = canvas.client_width() as f32;

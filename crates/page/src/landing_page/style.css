@@ -31,56 +31,32 @@ body {
 .navbar,
 .footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0 4rem;
     background-color: rgb(var(--primary-color));
     height: 8vh;
-    min-height: 60px;
-    border-bottom: 2px solid --secondary-color;
+    min-height: 80px;
+    border-bottom: 2px solid var(--secondary-color);
     box-sizing: border-box;
     z-index: 100;
 }
 
 .footer {
+    justify-content: space-between;
     border-bottom: none;
-    border-top: 2px solid --secondary-color;
-}
-
-.nav-left {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    height: 40px;
-    width: auto;
+    border-top: 2px solid var(--secondary-color);
 }
 
 .nav-right {
     display: flex;
-    gap: 2rem;
+    align-items: center;
+    gap: 4rem;
 }
 
-.nav-button {
-    background: transparent;
-    border: none;
-    color: #000;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+.nav-item {
     cursor: pointer;
-    padding: 0.5rem 1rem;
     transition: all 0.3s ease;
-    border-bottom: 2px solid transparent;
-}
-
-.nav-button:hover,
-.nav-button.active {
-    border-bottom: 2px solid #000;
-    opacity: 0.7;
 }
 
 .footer-info {
@@ -132,12 +108,7 @@ body {
     }
 
     .nav-right {
-        gap: 1rem;
-    }
-
-    .nav-button {
-        padding: 0.5rem 0.5rem;
-        font-size: 0.8rem;
+        gap: 2rem;
     }
 
     .product-grid {
@@ -178,15 +149,6 @@ body {
     }
 
     .nav-right {
-        gap: 0.5rem;
-    }
-
-    .nav-button {
-        padding: 0.5rem 0.2rem;
-        font-size: 0.7rem;
-    }
-
-    .logo {
-        height: 30px;
+        gap: 1rem;
     }
 }

@@ -44,7 +44,7 @@ impl WebComponent for LandingPageComponent {
 
     fn render(mut this: Signal<Self>) -> Element {
         let active_category = this.read().active_category;
-        let logo_source = asset!("/assets/logo.png");
+        let theme = crate::theme::Theme::default();
 
         use_effect(move || {
             let cat = this.read().active_category;
@@ -106,34 +106,41 @@ impl WebComponent for LandingPageComponent {
         };
 
         rsx! {
+            { theme.to_css_style() }
             style { { include_str!("style.css") } }
             div { class: "container",
                 // Header
                 nav { class: "navbar",
-                    div { class: "nav-left",
-                        img { class: "logo", src: "{logo_source}", alt: "Sensorial Logo" }
-                    }
                     div { class: "nav-right",
-                        button {
-                            class: if active_category == ProductCategory::Systems { "nav-button active" } else { "nav-button" },
+                        div {
+                            class: "nav-item",
                             onclick: move |_| {
                                 this.write().active_category = ProductCategory::Systems;
                             },
-                            "Systems"
+                                Brand {
+                                    variant: "Systems",
+                                    expanded: active_category == ProductCategory::Systems
+                                }
                         }
-                        button {
-                            class: if active_category == ProductCategory::Studio { "nav-button active" } else { "nav-button" },
+                        div {
+                            class: "nav-item",
                             onclick: move |_| {
                                 this.write().active_category = ProductCategory::Studio;
                             },
-                            "Studio"
+                                Brand {
+                                    variant: "Studio",
+                                    expanded: active_category == ProductCategory::Studio
+                                }
                         }
-                        button {
-                            class: if active_category == ProductCategory::Finance { "nav-button active" } else { "nav-button" },
+                        div {
+                            class: "nav-item",
                             onclick: move |_| {
                                 this.write().active_category = ProductCategory::Finance;
                             },
-                            "Finance"
+                                Brand {
+                                    variant: "Finance",
+                                    expanded: active_category == ProductCategory::Finance
+                                }
                         }
                     }
                 }

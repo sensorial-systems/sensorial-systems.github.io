@@ -26,8 +26,10 @@ impl WebComponent for ProductComponent {
 
     fn render(this: Signal<Self>) -> Element {
         let props = this.read().properties.clone();
+        let theme = crate::theme::Theme::default();
 
         rsx! {
+            { theme.to_css_style() }
             style { { include_str!("style.css") } }
             div { class: "product-card",
                 div { class: "product-icon", "{props.icon}" }
